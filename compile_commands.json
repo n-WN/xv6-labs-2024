@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-DSOL_UTIL",
+      "-DLAB_UTIL",
+      "-Werror",
+      "-Wall",
+      "-I.",
+      "-o",
+      "mkfs/mkfs",
+      "mkfs/mkfs.c"
+    ],
+    "directory": "/Users/lov3/Documents/Code/lab/xv6/xv6-labs-2024",
+    "file": "/Users/lov3/Documents/Code/lab/xv6/xv6-labs-2024/mkfs/mkfs.c",
+    "output": "/Users/lov3/Documents/Code/lab/xv6/xv6-labs-2024/mkfs/mkfs"
+  }
+]
