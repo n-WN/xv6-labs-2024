@@ -38,11 +38,6 @@ int main() {
         exit(1);
     }
 
-    if (pipe(parent_to_child) < 0 || pipe(child_to_parent) < 0) {
-        fprintf(2, "pipe() failed\n");
-        exit(1);
-    }
-
     // in parent process - return sub process PID
     // in sub process - return 0
 
