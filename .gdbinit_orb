@@ -1,0 +1,9 @@
+set confirm off
+set architecture riscv:rv64
+@REM ifconfig bridge100 | grep inet
+target remote 198.19.249.3:25501
+@REM target remote fe80::6cb1:33ff:fec9:ea64%bridge100:25501
+@REM target remote 127.0.0.1:25501
+symbol-file kernel/kernel
+set disassemble-next-line auto
+set riscv use-compressed-breakpoints yes

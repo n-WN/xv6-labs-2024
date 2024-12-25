@@ -2,8 +2,8 @@
 
 ## What's in this part? [???]
 
-- [ ] [Introduction and examples](https://pdos.csail.mit.edu/6.S081/2024/schedule.html)
-- [ ] [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html)
+<!-- - [ ] [Introduction and examples](https://pdos.csail.mit.edu/6.S081/2024/schedule.html)
+- [ ] [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html) -->
 
 ---
 
@@ -12,14 +12,17 @@
 LEC 1 (rtm): Introduction and examples (handouts: xv6 book)
 
 > 简介和示例 (讲义: xv6 书籍)
+> 
 
 Preparation: Read chapter 1 (for your amusement: Unix)
 
 > 准备: 阅读第 1 章 (供您娱乐: Unix)
+> 
 
 Assignment: [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html)
 
 > 作业：实验室工具: Unix 工具
+> 
 
 ---
 
@@ -36,6 +39,7 @@ Assignment: [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/la
 > Course: 6.S081
 > 
 > Term: 2024
+> 
 
 ## 配置 QEMU/RISC-V tools chain
 
@@ -121,7 +125,7 @@ make clean && bear --make qemu
 
 由于代码 formatter 不符合我的审美, 我继续编辑 `.clang-format` 文件, 使其符合我的审美. 又因为头文件导入顺序如果错乱会导致 Intellisense 异常, 加入 `SortIncludes: false` 使其不会格式化头文件导入顺序
 
-> .clang-format
+> `.clang-format`
 
 ```yaml
 BasedOnStyle: LLVM
@@ -135,14 +139,14 @@ SortIncludes: false
 
 下一步我们将继续进行 [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html) 的实验: `sleep`, 在这之前 我们需要先阅读 [Chapter 1: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/xv6/book-riscv-rev4.pdf)
 
---- 
+---
 
 # Lab util: Unix utilities [2/2]
 
 ## What's in this part?
 
-- [ ] [作业概览: Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html)
-- [ ] [导读: Chapter 1: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/xv6/book-riscv-rev4.pdf)
+<!-- - [ ] [作业概览: Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html)
+- [ ] [导读: Chapter 1: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/xv6/book-riscv-rev4.pdf) -->
 
 ---
 
@@ -182,10 +186,10 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-### 评测
+#### 评测
 
 ```shell
-lov3@Cz ~/D/C/l/x/xv6-labs-2024> ./grade-lab-util sleep
+xv6-labs-2024> ./grade-lab-util sleep
 make: 'kernel/kernel' is up to date.
 == Test sleep, no arguments == sleep, no arguments: OK (3.7s) 
 == Test sleep, returns == sleep, returns: OK (0.4s) 
@@ -277,13 +281,93 @@ int main() {
 }
 ```
 
-### 评测
+#### 评测
 
 ```shell
 xv6-labs-2024> ./grade-lab-util pingpong
 make: 'kernel/kernel' is up to date.
 == Test pingpong == pingpong: OK (0.7s) 
 ```
+
+## 调试
+
+### GDB CLI
+
+> terminal 1
+
+```shell
+xv6-labs-2024> make qemu-gdb
+*** Now run 'gdb' in another window.
+qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -global virtio-mmio.force-legacy=false -drive file=fs.img,if=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -S -gdb tcp::25501
+```
+
+> terminal 2
+
+```shell
+xv6-labs-2024> riscv64-elf-gdb                                                                        util-!?
+GNU gdb (GDB) 15.2
+Copyright (C) 2024 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "--host=aarch64-apple-darwin23.6.0 --target=riscv64-elf".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+The target architecture is set to "riscv:rv64".
+warning: No executable has been specified and target does not support
+determining executable automatically.  Try using the "file" command.
+0x0000000000001000 in ?? ()
+(gdb) 
+```
+
+GDB 会查找当前目录下的 `.gdbinit` 文件, 如果有则自动加载, 而 `.gdbinit` 文件中有 `target remote` 命令, 会自动连接到 QEMU 的 GDBstub, 以及执行一些初始化操作
+
+显示 `0x0000000000001000 in ?? ()` 说明 GDB 已经连接到了 QEMU 的 GDBstub
+
+> 如果不习惯 GDB 的 CLI, 可以使用 GDB Dashboard 插件
+>
+
+[GDB Dashboard - GitHub](https://github.com/cyrus-and/gdb-dashboard)
+
+#### 效果图
+
+![](file:///Users/lov3/Documents/Blog/Gridea/post-images/1735065146439.png)
+
+### VS Code
+
+配置 `launch.json` 和 `tasks.json` 文件, 实现 `F5` 启动调试
+
+#### 效果图
+
+![](file:///Users/lov3/Documents/Blog/Gridea/post-images/1735065113481.png)
+
+### CLion
+
+加载项目时选择 Makefile, 并修改参数为 qemu, clean 动作参数不变
+
+配置远程调试, 选择远程调试, 而不是远程 GDB 服务器
+
+#### 效果图
+
+![](file:///Users/lov3/Documents/Blog/Gridea/post-images/1735065106914.png)
+
+### 总结
+
+可惜目前并不懂如何在调试结束后向 qemu 发送退出信号, 所以只能手动退出
+
+等等, 信号? 那岂不是在 GDB 结束后跟随向进程发送信号即可退出? 试试看
+
+问题是如何无感完成这个操作呢
+
+...
+
 
 ## 遇到的问题
 
@@ -318,8 +402,6 @@ UPROGS=\
 	$U/_sleep\
 ```
 
-
-
 ### 2. `make grade` 报错
 
 #### 找不到 `pipes` 模块
@@ -327,7 +409,7 @@ UPROGS=\
 ```shell
 xv6-labs-2024> make grade
 make clean
-make[1]: Entering directory '/Users/lov3/Documents/Code/lab/xv6/xv6-labs-2024'
+make[1]: Entering directory '/xv6/xv6-labs-2024'
 rm -rf *.tex *.dvi *.idx *.aux *.log *.ind *.ilg *.dSYM *.zip *.pcap \
 */*.o */*.d */*.asm */*.sym \
 user/initcode user/initcode.out user/usys.S user/_* \
@@ -365,8 +447,93 @@ make: *** [Makefile:346: grade] Error 1
 
 原因是当前环境中没有 `pipes` 模块, 切换到低版本 `python` 环境解决
 
+### 3. GDBstub
 
+一个终端执行 `make qemu-gdb`, 另一个终端执行 `gdb` 进行调试
 
+> terminal 1
+
+```shell
+xv6-labs-2024> make qemu-gdb
+*** Now run 'gdb' in another window.
+qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -global virtio-mmio.force-legacy=false -drive file=fs.img,if=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -S -gdb tcp::25501
+```
+
+> terminal 2
+
+```shell
+xv6-labs-2024> riscv64-elf-gdb
+```
+
+但如果想用更方便的 `VS Code` 进行调试, 参考网上的资料配置后, 按下调试, 终端此前的 `make qemu-gdb` 会自动退出
+
+> terminal 1
+
+```shell
+qemu-system-riscv64: QEMU: Terminated via GDBstub
+```
+
+搜索关键词, 找到了 [stackoverflow Solution](https://stackoverflow.com/a/5572860/20184956)
+
+链接中的内容表明是 `target remote` 两次造成 GDBstub 退出, ~~但我并没有在 `VS Code` 中设置两次 `target remote`~~, 此时反应上来是自动 `source .gdbinit` 文件, 里面有 `target remote` 命令, 于是我将文件删除, 问题解决
+
+这个文件可能会在 `make qemu-gdb` 时自动生成, 所以需要注意不要 `target remote` 两次
+
+在终端下的复现:
+
+> terminal 1
+
+```shell
+xv6-labs-2024> make qemu-gdb                                                                                                           util-!?
+*** Now run 'gdb' in another window.
+qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -global virtio-mmio.force-legacy=false -drive file=fs.img,if=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -S -gdb tcp::25501
+```
+
+> terminal 2
+
+```shell
+> riscv64-elf-gdb 
+GNU gdb (GDB) 15.2
+Copyright (C) 2024 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "--host=aarch64-apple-darwin23.6.0 --target=riscv64-elf".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+(gdb) target remote 127.0.0.1:25501
+Remote debugging using 127.0.0.1:25501
+warning: No executable has been specified and target does not support
+determining executable automatically.  Try using the "file" command.
+0x0000000000001000 in ?? ()
+(gdb) target remote 127.0.0.1:25501
+A program is being debugged already.  Kill it? (y or n) y
+could not connect: Operation timed out.
+(gdb) 
+```
+
+此时终端 1 输出如下
+
+> terminal 1
+
+```shell
+qemu-system-riscv64: QEMU: Terminated via GDBstub
+```
+
+以此可以证明, `target remote` 两次会导致 GDBstub 退出
+
+---
+
+## 杂七杂八
+
+macOS 下的 CLion 默认格式化整个文件的快捷键是 `Cmd + Option + L`
 
 ---
 
@@ -385,3 +552,5 @@ make: *** [Makefile:346: grade] Error 1
 [6.1810 Lab1 util: Unix utilities by LRL52](https://lrl52.top/1213/6-1810-lab1-util-unix-utilities/)
 
 [guidance](https://pdos.csail.mit.edu/6.1810/2024/labs/guidance.html)
+
+[VS Code - cpp launch-json-reference](https://code.visualstudio.com/docs/cpp/launch-json-reference)
