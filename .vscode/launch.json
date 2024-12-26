@@ -4,6 +4,7 @@
         {
             "name": "Debug xv6",
             "type": "cppdbg",
+            "preLaunchTask": "xv6-build-gdb",
             "request": "launch",
             "program": "${workspaceFolder}/kernel/kernel",
             "args": [],
@@ -14,7 +15,6 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            // "preLaunchTask": "xv6-build-gdb",
 
             "setupCommands": [
                 // https://www.zixiangcode.top/article/how-to-debug-xv6-in-vscode
