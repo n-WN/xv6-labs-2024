@@ -53,6 +53,8 @@ va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
 
 请注意, xv6 并不会在物理内存中连续放置虚拟页面.
 
+> 这步好像就是个问答题
+
 ### Speed up system calls (easy)
 
 一些操作系统 (例如 Linux) 通过在用户空间和内核之间共享一个只读区域的数据来加速某些系统调用 这种方法消除了系统调用时进入内核的开销 
@@ -76,6 +78,15 @@ va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
 - 选择合适的权限位, 使用户空间只能读取该页面 
 - 页面生命周期中涉及多个操作, 可以参考 `kernel/proc.c` 中的 `trapframe` 处理逻辑 
 - 思考:还有哪些系统调用可以利用该共享页面加速？请解释 
+
+#### 检查点
+
+```shell
+xv6-labs-2024> ./grade-lab-pgtbl
+== Test pgtbltest == (3.7s) 
+== Test   pgtbltest: ugetpid == 
+  pgtbltest: ugetpid: OK 
+```
 
 ### Print a page table (easy)
 
