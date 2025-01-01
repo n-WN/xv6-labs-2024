@@ -145,16 +145,52 @@ visualize RISC-V page tables
 
 write a function that prints the contents of a page tabl
 
-遇到了 panic, 果真 easy 吗
+**遇到了 panic, 果真 easy 吗**
 
 ```shell
 scause=0xd sepc=0x8000011a stval=0x505050505050505
 panic: kerneltrap
 ```
 
+不清楚什么原因, 先给出能 AC 的代码
+
+#### Solution
+
+重点就是匹配格式, 并利用 `printf` 有限的格式化输出地址
+
+[GitHub commit](https://github.com/n-WN/xv6-labs-2024/commit/a10a82eeaa344ea66de5891c3008c48d80b8deac)
+
 #### 检查点
 
+```shell
+xv6-labs-2024> ./grade-lab-pgtbl
+== Test   pgtbltest: print_kpgtbl == 
+  pgtbltest: print_kpgtbl: OK
+```
+
 ### Use superpages (moderate)/(hard)
+
+修改 xv6 内核以支持 superpages
+
+> 当一个用户程序调用 `sbrk()` 请求分配 2MB (RISC-V 的分页硬件中, 被称为 megapage) 或更多内存时, 内核应该能够为该区域分配一个超级页, 而不是多个普通的 4KB 页. 这将帮助减少页表的内存消耗, 并可能提高 TLB Cache 命中率, 从而提高性能
+
+#### Solution
+
+检测需要分配的内存大小, 如果大于 2MB, 则分配一个 superpage
+
+并维护这个 superpage 的生命周期, 也就是说, 我们需要
+
+- 修改 `sys_sbrk` in `kernel/sysproc.c`, 修改 syscall 已支持 superpage allocation
+- 修改 `kernel/kalloc.c`, add new function `superalloc` and `superalloc` to allocate and free superpages
+- 修改 `uvmcopy` and `uvmunmap` in `kernel/vm.c`, 在进程 fork 和 退出时处理 superpage(正确的复制和释放 superpage)
+
+#### 检查点
+
+```shell
+xv6-labs-2024> ./grade-lab-pgtbl
+== Test   pgtbltest: superpage == 
+  pgtbltest: superpage: OK
+```
 
 ## Reference
 
