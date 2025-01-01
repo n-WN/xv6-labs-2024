@@ -4,7 +4,7 @@
 
 [task - page tables](https://pdos.csail.mit.edu/6.S081/2024/labs/pgtbl.html)
 
-> 将探索页面表并修改它们以实现常见的操作系统功能
+> 将探索page表并修改它们以实现常见的操作系统功能
 
 > Before you start coding, read Chapter 3 of the xv6 book, and related files:
 >
@@ -49,11 +49,45 @@ va 0xFFFFE000 pte 0x21FD80C7 pa 0x87F60000 perm 0xC7
 va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
 ```
 
-对于每个输出中的页表条目 `print_pgtbl` , 解释它逻辑上包含的内容以及它的权限位. xv6 书籍中的图 3.4 可能有所帮助, 尽管请注意, 该图可能包含与这里检查的进程略有不同的页面集.
+对于每个输出中的页表条目 `print_pgtbl` , 解释它逻辑上包含的内容以及它的权限位. xv6 book 中的图 3.4 可能有所帮助, 尽管请注意, 该图可能包含与这里检查的进程略有不同的page集
 
-请注意, xv6 并不会在物理内存中连续放置虚拟页面.
+请注意, xv6 并不会在物理内存中连续放置虚拟 page.
 
 > 这步好像就是个问答题
+
+#### Solution
+
+1. 开始的页表项 (va 0):
+```
+va 0 pte 0x21FCF45B pa 0x87F3D000 perm 0x5B
+```
+- va: 虚拟地址 0x0
+- pa: 物理地址 0x87F3D000 (PPN: 0x21FCF)
+- 权限 0x5B: PTE_U | PTE_X | PTE_W | PTE_R | PTE_V
+  - 用户可访问、可执行、可写、可读、有效
+
+2. 高地址空间的 TRAPFRAME 部分:
+```
+va 0xFFFFE000 pte 0x21FD80C7 pa 0x87F60000 perm 0xC7
+```
+- va: TRAPFRAME page
+- pa: 0x87F60000 (PPN: 0x21FD8)
+- 权限 0xC7: PTE_W | PTE_R | PTE_V
+  - 内核态可写可读、有效，不可被用户访问
+
+3. TRAMPOLINE page:
+```
+va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
+```
+- va: TRAMPOLINE page
+- pa: 0x80007000 (PPN: 0x20001)
+- 权限 0x4B: PTE_X | PTE_R | PTE_V
+  - 可执行、可读、有效，不可写
+
+这些页表项的权限设置反映了 xv6 的内存保护机制:
+- 用户代码 具有完整的用户权限
+- TRAPFRAME 只允许内核访问
+- TRAMPOLINE 是只读且可执行的
 
 ### Speed up system calls (easy)
 
@@ -63,9 +97,9 @@ va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
 
 #### **任务要求**
 
-1. **为每个进程映射一个只读页面**:
+1. **为每个进程映射一个只读page**:
    - 映射地址为 `USYSCALL` (在 `memlayout.h` 中定义) 
-   - 在该页面的起始位置, 存储一个 `struct usyscall` (定义在 `memlayout.h`), 并初始化为当前进程的 PID 
+   - 在该page的起始位置, 存储一个 `struct usyscall` (定义在 `memlayout.h`), 并初始化为当前进程的 PID 
 
 2. **用户态接口**:
    - 在用户态, 提供 `ugetpid()` 函数, 它会自动使用 `USYSCALL` 映射获取进程 PID 
@@ -75,9 +109,26 @@ va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
 
 #### **提示**
 
-- 选择合适的权限位, 使用户空间只能读取该页面 
-- 页面生命周期中涉及多个操作, 可以参考 `kernel/proc.c` 中的 `trapframe` 处理逻辑 
-- 思考:还有哪些系统调用可以利用该共享页面加速？请解释 
+- 选择合适的权限位, 使用户空间只能读取该page 
+- page生命周期中涉及多个操作, 可以参考 `kernel/proc.c` 中的 `trapframe` 处理逻辑 
+- 思考:还有哪些系统调用可以利用该共享page加速？请解释
+
+#### Solution
+
+> 对应上一题的解答
+> 
+> 用户地址空间的 code segment & data 放在 0 开始的一段低地址空间
+>
+> `TRAPFRAME` & `TRAMPOLINE` & `USYSCALL` 位于高地址空间
+>
+> 同时在 `proc_freepagetable` 中释放
+
+- 为 `struct proc` 添加 `usc` 字段指向用户系统调用结构, 以此来 boost 用户系统调用
+- 使用只读权限(PTE_R | PTE_U)确保用户进程安全
+- 在进程生命周期的关键点维护 pid 值
+- 处理page分配和释放
+
+[code](https://github.com/n-WN/xv6-labs-2024/commit/d35b5eda3085ff1ca0b022f4492ba83d684d7f55)
 
 #### 检查点
 
@@ -90,7 +141,18 @@ xv6-labs-2024> ./grade-lab-pgtbl
 
 ### Print a page table (easy)
 
+visualize RISC-V page tables
 
+write a function that prints the contents of a page tabl
+
+遇到了 panic, 果真 easy 吗
+
+```shell
+scause=0xd sepc=0x8000011a stval=0x505050505050505
+panic: kerneltrap
+```
+
+#### 检查点
 
 ### Use superpages (moderate)/(hard)
 
