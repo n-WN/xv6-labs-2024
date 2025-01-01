@@ -150,7 +150,7 @@ static void freeproc(struct proc *p) {
     p->trapframe = 0;
     if (p->pagetable)
         proc_freepagetable(p->pagetable, p->sz);
-    if (p -> usc)               // user syscall struct
+    if (p->usc) // user syscall struct
         kfree((void *)p->usc);
     p->usc = 0;
     p->pagetable = 0;
@@ -193,8 +193,8 @@ pagetable_t proc_pagetable(struct proc *p) {
         return 0;
     }
 
-    if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p->usc), 
-                PTE_R | PTE_U) < 0) {
+    if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p->usc), PTE_R | PTE_U) <
+        0) {
         uvmunmap(pagetable, TRAPFRAME, 1, 0);
         uvmfree(pagetable, 0);
         return 0;
@@ -255,10 +255,17 @@ int growproc(int n) {
     struct proc *p = myproc();
 
     sz = p->sz;
-    if (n > 0) {
+    // if (n > 0) {
+    if (n > 2097152) {
+        if ((sz = superuvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
+            return -1;
+        }
+    } else if (n > 0) {
         if ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
             return -1;
         }
+    } else if (n < -2097152) {
+        sz = superuvmdealloc(p->pagetable, sz, sz + n);
     } else if (n < 0) {
         sz = uvmdealloc(p->pagetable, sz, sz + n);
     }
