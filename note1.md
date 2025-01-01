@@ -146,6 +146,8 @@ make: *** [Makefile:347: grade] Error 1
 
 最后一个得分点输出不能读取 `time.txt`, 分析 grade 的代码, 错误来自 `./gradelib.py` 中的 `check_time` 函数
 
+奥, `time.txt` 是用来记录实验时间的, 但我没有写入时间, 所以这里会报错. 忽略
+
 ```python
 def check_time():
     try:
