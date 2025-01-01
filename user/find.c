@@ -37,81 +37,93 @@
 #include "user/user.h"
 
 #define BUF_SIZE 512
+#define ERROR_PREFIX "find: "
 
-char *get_filename(char *path) {
-    char *p;
-
-    for (p = path + strlen(path); p >= path && *p != '/'; --p)
-        ;
-    ++p;
-
-    return p;
+// 错误处理函数
+void error(char *msg, char *path) {
+    fprintf(2, ERROR_PREFIX "%s %s\n", msg, path);
 }
 
-void find(char *path, char *filename) {
+// 从路径中提取文件名
+char* extract_filename(char *path) {
+    char *p = path + strlen(path);
+    while (p >= path && *p != '/') {
+        p--;
+    }
+    return p + 1;
+}
+
+// 构建完整路径
+int build_path(char *base, char *name, char *full_path) {
+    int len = strlen(base);
+    if (len + 1 + strlen(name) + 1 > BUF_SIZE) {
+        error("path too long", base);
+        return -1;
+    }
+    strcpy(full_path, base);
+    full_path[len] = '/';
+    strcpy(full_path + len + 1, name);
+    return 0;
+}
+
+// 检查是否为特殊目录
+int is_special_dir(char *name) {
+    return strcmp(name, ".") == 0 || strcmp(name, "..") == 0;
+}
+
+// 递归查找文件
+void find(char *path, char *target) {
     int fd;
-    struct dirent de;
     struct stat st;
-    char *p;
+    struct dirent de;
+    char new_path[BUF_SIZE];
 
     if ((fd = open(path, O_RDONLY)) < 0) {
-        fprintf(2, "find: cannot open %s\n", path);
+        error("cannot open", path);
         return;
     }
 
     if (fstat(fd, &st) < 0) {
-        fprintf(2, "find: cannot stat %s\n", path);
+        error("cannot stat", path);
         close(fd);
         return;
     }
 
     switch (st.type) {
-    case T_FILE:
-        if (strcmp(get_filename(path), filename) == 0) {
-            printf("%s\n", path);
-        }
-        break;
-
-    case T_DIR:
-        if (strlen(path) + 1 + DIRSIZ + 1 >
-            BUF_SIZE) { // "1" for "/" and "1" for null terminator
-            printf("find: path too long\n");
+        case T_FILE:
+            if (strcmp(extract_filename(path), target) == 0) {
+                printf("%s\n", path);
+            }
             break;
-        }
-        p = path + strlen(path);
-        *p++ = '/'; // p points to position after '/' and will not change in the
-                    // following loop
-        while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-            if (de.inum == 0) {
-                continue;
-            }
-            if (strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0) {
-                continue;
-            }
-            memmove(p, de.name, DIRSIZ);
-            p[DIRSIZ] = 0;
-            if (stat(path, &st) < 0) {
-                fprintf(2, "find: cannot stat %s\n", path);
-                continue;
-            }
-            find(path, filename);
-        }
-        break;
-    }
 
+        case T_DIR:
+            while (read(fd, &de, sizeof(de)) == sizeof(de)) {
+                if (de.inum == 0 || is_special_dir(de.name)) {
+                    continue;
+                }
+                
+                if (build_path(path, de.name, new_path) < 0) {
+                    break;
+                }
+                
+                if (stat(new_path, &st) < 0) {
+                    error("cannot stat", new_path);
+                    continue;
+                }
+                
+                find(new_path, target);
+            }
+            break;
+    }
     close(fd);
 }
 
 int main(int argc, char *argv[]) {
-    static char buf[BUF_SIZE];
-
     if (argc != 3) {
-        fprintf(2, "usage: find <path> <filename>\n");
+        error("usage: find <path> <filename>", "");
         exit(1);
     }
 
-    strcpy(buf, argv[1]);
-    find(buf, argv[2]);
-
+    find(argv[1], argv[2]);
     return 0;
 }
