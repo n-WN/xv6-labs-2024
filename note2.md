@@ -184,13 +184,25 @@ xv6-labs-2024> ./grade-lab-pgtbl
 - 修改 `kernel/kalloc.c`, add new function `superalloc` and `superalloc` to allocate and free superpages
 - 修改 `uvmcopy` and `uvmunmap` in `kernel/vm.c`, 在进程 fork 和 退出时处理 superpage(正确的复制和释放 superpage)
 
+> panic
+
+```
+$ ls
+scause=0xd sepc=0x800000e8 stval=0x505050505050505
+panic: kerneltrap
+```
+
+已经实现的代码在 [GitHub commit](https://github.com/n-WN/xv6-labs-2024/commit/a7ba61e775fdaa6b685d8b5fa6d6457163feb411)
+
 #### 检查点
 
-```shell
+<!-- ```shell
 xv6-labs-2024> ./grade-lab-pgtbl
 == Test   pgtbltest: superpage == 
   pgtbltest: superpage: OK
-```
+``` -->
+
+panic
 
 ## Reference
 
