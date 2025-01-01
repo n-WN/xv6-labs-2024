@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="xv6-labs-2024" targetName="print-gdbport" />
+      <config projectName="xv6-labs-2024" targetName="qemu-gdb" />
+      <config projectName="xv6-labs-2024" targetName="submit-check" />
+      <config projectName="xv6-labs-2024" targetName="_init" />
+      <config projectName="xv6-labs-2024" targetName="grade" />
+      <config projectName="xv6-labs-2024" targetName="README" />
+      <config projectName="xv6-labs-2024" targetName="Makefile" />
+      <config projectName="xv6-labs-2024" targetName="qemu" />
+      <config projectName="xv6-labs-2024" targetName="zipball" />
+      <config projectName="xv6-labs-2024" targetName="tags" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8bf64369-2fc6-441e-b8aa-3bfbd72d77c7" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.gdbinit.tmpl-riscv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/console.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/console.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/kalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kalloc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/printf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/proc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/proc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/riscv.h" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/riscv.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/spinlock.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/spinlock.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/start.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/start.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/uart.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/uart.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/note0.md" beforeDir="false" afterPath="$PROJECT_DIR$/note0.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/ls.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ls.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/mkdir.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/mkdir.c" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="xv6-labs-2024" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="xv6-labs-2024" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="2.2" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2qfp4IgFGmG2KZrMNnKmSQAOWkF" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "util",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "structure.view.defaults.are.configured": "true",
+    "vue.rearranger.settings.migration": "true",
+    "远程调试.remote gdb.executor": "Debug"
+  }
+}]]></component>
+  <component name="RunManager" selected="远程调试.remote gdb">
+    <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="README" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="README" CONFIG_NAME="README" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_init" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="_init" CONFIG_NAME="_init" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="grade" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="grade" CONFIG_NAME="grade" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="print-gdbport" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="print-gdbport" CONFIG_NAME="print-gdbport" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="qemu-gdb" CONFIG_NAME="qemu-gdb" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="qemu" CONFIG_NAME="qemu" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="submit-check" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="submit-check" CONFIG_NAME="submit-check" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tags" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="tags" CONFIG_NAME="tags" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="zipball" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6-labs-2024" TARGET_NAME="zipball" CONFIG_NAME="zipball" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="remote gdb" type="CLion_Remote" version="1" remoteCommand="127.0.0.1:25501" symbolFile="$PROJECT_DIR$/kernel/kernel" sysroot="">
+      <debugger kind="GDB" isBundled="true" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="原生应用程序.grade" />
+      <item itemvalue="原生应用程序.submit-check" />
+      <item itemvalue="原生应用程序.zipball" />
+      <item itemvalue="原生应用程序._init" />
+      <item itemvalue="原生应用程序.Makefile" />
+      <item itemvalue="原生应用程序.print-gdbport" />
+      <item itemvalue="原生应用程序.qemu" />
+      <item itemvalue="原生应用程序.qemu-gdb" />
+      <item itemvalue="原生应用程序.README" />
+      <item itemvalue="原生应用程序.tags" />
+      <item itemvalue="远程调试.remote gdb" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="8bf64369-2fc6-441e-b8aa-3bfbd72d77c7" name="更改" comment="" />
+      <created>1735063290748</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1735063290748</updated>
+      <workItem from="1735063292222" duration="1185000" />
+      <workItem from="1735065952552" duration="709000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/kernel/main.c</url>
+          <line>9</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
