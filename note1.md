@@ -36,6 +36,8 @@ $ make clean
 
 [answers-syscall.txt](https://github.com/n-WN/xv6-labs-2024/blob/7d2c0db0f9d19a67628731f90c2d7d782cd1bedc/answers-syscall.txt)
 
+跑了下 grade, 竟然通过了, 不清楚是如何判断的... 暂时没时间去看评测实现了
+
 ### System call tracing
 
 add prototype in `user.h`
@@ -54,7 +56,59 @@ lastly, add `trace info` in `syscall.c`
 
 变更的代码见 commit [System call tracing](https://github.com/n-WN/xv6-labs-2024/commit/7d2c0db0f9d19a67628731f90c2d7d782cd1bedc)
 
-### 
+#### 评测
+
+```shell
+$ make grade
+== Test answers-syscall.txt == 
+answers-syscall.txt: OK 
+== Test trace 32 grep == 
+$ make qemu-gdb
+trace 32 grep: OK (4.3s) 
+== Test trace close grep == 
+$ make qemu-gdb
+trace close grep: OK (0.7s) 
+== Test trace exec + open grep == 
+$ make qemu-gdb
+trace exec + open grep: OK (2.0s) 
+== Test trace all grep == 
+$ make qemu-gdb
+trace all grep: OK (1.1s) 
+== Test trace nothing == 
+$ make qemu-gdb
+trace nothing: OK (1.9s) 
+== Test trace children == 
+$ make qemu-gdb
+trace children: OK (22.2s) 
+== Test attack == 
+$ make qemu-gdb
+attack: FAIL (0.3s) 
+    ...
+         hart 2 starting
+         init: starting sh
+         $ attacktest
+         FAIL: no/incorrect secret
+         $ qemu-system-riscv64: terminating on signal 15 from pid 82894 (<unknown process>)
+    MISSING '^OK: secret is'
+    QEMU output saved to xv6.out.attack
+== Test time == 
+time: FAIL 
+    Cannot read time.txt
+Score: 35/50
+make: *** [Makefile:347: grade] Error 1
+```
+
+### Attack xv6
+
+通过查看注释, 可以定位到 `kernel/kalloc.c`, 这是用户程序的物理内存分配器
+
+> kernel stacks, page-table pages
+
+`user/secret.c` 从 `kernel/kalloc.c` 中通过 `kalloc` 从栈顶取内存页, 退出时通过 `kfree` 释放内存页(放回栈顶)
+
+而这时就可以复用这个内存页, 从而获取到 `secret` 的值
+
+**注意** `secret` 与 `attack` 分配内存时, 内存页的出栈顺序不一定相同, 要注意按照释放内存页的逆序来获取 secret
 
 ## Reference
 
