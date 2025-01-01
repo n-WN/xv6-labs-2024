@@ -1,0 +1,206 @@
+# Lab: page tables
+
+## What's in this part? [???]
+
+[task - page tables](https://pdos.csail.mit.edu/6.S081/2024/labs/pgtbl.html)
+
+> 将探索page表并修改它们以实现常见的操作系统功能
+
+> Before you start coding, read Chapter 3 of the xv6 book, and related files:
+>
+>> kernel/memlayout.h, which captures the layout of memory.
+>>
+>> kernel/vm.c, which contains most virtual memory (VM) code.
+>>
+>> kernel/kalloc.c, which contains code for allocating and freeing physical memory.
+>>
+> It may also help to consult the RISC-V privileged architecture manual.
+
+> To start the lab, switch to the pgtbl branch:
+
+```shell
+$ git fetch
+$ git checkout pgtbl
+$ make clean
+```
+
+> 做这 part 之前, 笔者先看了 jyy 的 xv6 代码导读, 里面有讲一些基本的内存结构, 以及一些基本的内存管理的代码, 这些都是很有帮助的. slides 如下:
+
+[slides](https://jyywiki.cn/OS/2022/slides/18.slides.html#/)
+
+更详细的内容依旧参考 [xv6 book]
+
+## 实现
+
+### Inspect a user-process page table (easy)
+
+> 翻译 task
+
+为了帮助您理解 RISC-V 页表, 您的第一个任务是解释用户进程的页表.
+
+运行 make qemu 和运行用户程序 pgtbltest . print_pgtbl 函数使用我们为 xv6 添加的实验室系统调用打印出 pgtbltest 进程的前 10 页和最后 10 页的页表项. 输出如下所示: 
+
+```shell
+va 0 pte 0x21FCF45B pa 0x87F3D000 perm 0x5B
+va 1000 pte 0x21FCE85B pa 0x87F3A000 perm 0x5B
+...
+va 0xFFFFD000 pte 0x0 pa 0x0 perm 0x0
+va 0xFFFFE000 pte 0x21FD80C7 pa 0x87F60000 perm 0xC7
+va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
+```
+
+对于每个输出中的页表条目 `print_pgtbl` , 解释它逻辑上包含的内容以及它的权限位. xv6 book 中的图 3.4 可能有所帮助, 尽管请注意, 该图可能包含与这里检查的进程略有不同的page集
+
+请注意, xv6 并不会在物理内存中连续放置虚拟 page.
+
+> 这步好像就是个问答题
+
+#### Solution
+
+1. 开始的页表项 (va 0):
+```
+va 0 pte 0x21FCF45B pa 0x87F3D000 perm 0x5B
+```
+- va: 虚拟地址 0x0
+- pa: 物理地址 0x87F3D000 (PPN: 0x21FCF)
+- 权限 0x5B: PTE_U | PTE_X | PTE_W | PTE_R | PTE_V
+  - 用户可访问、可执行、可写、可读、有效
+
+2. 高地址空间的 TRAPFRAME 部分:
+```
+va 0xFFFFE000 pte 0x21FD80C7 pa 0x87F60000 perm 0xC7
+```
+- va: TRAPFRAME page
+- pa: 0x87F60000 (PPN: 0x21FD8)
+- 权限 0xC7: PTE_W | PTE_R | PTE_V
+  - 内核态可写可读、有效，不可被用户访问
+
+3. TRAMPOLINE page:
+```
+va 0xFFFFF000 pte 0x20001C4B pa 0x80007000 perm 0x4B
+```
+- va: TRAMPOLINE page
+- pa: 0x80007000 (PPN: 0x20001)
+- 权限 0x4B: PTE_X | PTE_R | PTE_V
+  - 可执行、可读、有效，不可写
+
+这些页表项的权限设置反映了 xv6 的内存保护机制:
+- 用户代码 具有完整的用户权限
+- TRAPFRAME 只允许内核访问
+- TRAMPOLINE 是只读且可执行的
+
+### Speed up system calls (easy)
+
+一些操作系统 (例如 Linux) 通过在用户空间和内核之间共享一个只读区域的数据来加速某些系统调用 这种方法消除了系统调用时进入内核的开销 
+
+在本实验中, 您将实现该优化, 为 `getpid()` 系统调用加速 
+
+#### **任务要求**
+
+1. **为每个进程映射一个只读page**:
+   - 映射地址为 `USYSCALL` (在 `memlayout.h` 中定义) 
+   - 在该page的起始位置, 存储一个 `struct usyscall` (定义在 `memlayout.h`), 并初始化为当前进程的 PID 
+
+2. **用户态接口**:
+   - 在用户态, 提供 `ugetpid()` 函数, 它会自动使用 `USYSCALL` 映射获取进程 PID 
+
+3. **测试目标**:
+   - 如果 `pgtbltest` 程序中的 `ugetpid` 测试通过, 则任务成功完成 
+
+#### **提示**
+
+- 选择合适的权限位, 使用户空间只能读取该page 
+- page生命周期中涉及多个操作, 可以参考 `kernel/proc.c` 中的 `trapframe` 处理逻辑 
+- 思考:还有哪些系统调用可以利用该共享page加速？请解释
+
+#### Solution
+
+> 对应上一题的解答
+> 
+> 用户地址空间的 code segment & data 放在 0 开始的一段低地址空间
+>
+> `TRAPFRAME` & `TRAMPOLINE` & `USYSCALL` 位于高地址空间
+>
+> 同时在 `proc_freepagetable` 中释放
+
+- 为 `struct proc` 添加 `usc` 字段指向用户系统调用结构, 以此来 boost 用户系统调用
+- 使用只读权限(PTE_R | PTE_U)确保用户进程安全
+- 在进程生命周期的关键点维护 pid 值
+- 处理page分配和释放
+
+[code](https://github.com/n-WN/xv6-labs-2024/commit/d35b5eda3085ff1ca0b022f4492ba83d684d7f55)
+
+#### 检查点
+
+```shell
+xv6-labs-2024> ./grade-lab-pgtbl
+== Test pgtbltest == (3.7s) 
+== Test   pgtbltest: ugetpid == 
+  pgtbltest: ugetpid: OK 
+```
+
+### Print a page table (easy)
+
+visualize RISC-V page tables
+
+write a function that prints the contents of a page tabl
+
+**遇到了 panic, 果真 easy 吗**
+
+```shell
+scause=0xd sepc=0x8000011a stval=0x505050505050505
+panic: kerneltrap
+```
+
+不清楚什么原因, 先给出能 AC 的代码
+
+#### Solution
+
+重点就是匹配格式, 并利用 `printf` 有限的格式化输出地址
+
+[GitHub commit](https://github.com/n-WN/xv6-labs-2024/commit/a10a82eeaa344ea66de5891c3008c48d80b8deac)
+
+#### 检查点
+
+```shell
+xv6-labs-2024> ./grade-lab-pgtbl
+== Test   pgtbltest: print_kpgtbl == 
+  pgtbltest: print_kpgtbl: OK
+```
+
+### Use superpages (moderate)/(hard)
+
+修改 xv6 内核以支持 superpages
+
+> 当一个用户程序调用 `sbrk()` 请求分配 2MB (RISC-V 的分页硬件中, 被称为 megapage) 或更多内存时, 内核应该能够为该区域分配一个超级页, 而不是多个普通的 4KB 页. 这将帮助减少页表的内存消耗, 并可能提高 TLB Cache 命中率, 从而提高性能
+
+#### Solution
+
+检测需要分配的内存大小, 如果大于 2MB, 则分配一个 superpage
+
+并维护这个 superpage 的生命周期, 也就是说, 我们需要
+
+- 修改 `sys_sbrk` in `kernel/sysproc.c`, 修改 syscall 已支持 superpage allocation
+- 修改 `kernel/kalloc.c`, add new function `superalloc` and `superalloc` to allocate and free superpages
+- 修改 `uvmcopy` and `uvmunmap` in `kernel/vm.c`, 在进程 fork 和 退出时处理 superpage(正确的复制和释放 superpage)
+
+> panic
+
+```
+$ ls
+scause=0xd sepc=0x800000e8 stval=0x505050505050505
+panic: kerneltrap
+```
+
+已经实现的代码在 [GitHub commit](https://github.com/n-WN/xv6-labs-2024/commit/a7ba61e775fdaa6b685d8b5fa6d6457163feb411)
+
+#### 检查点
+
+
+panic
+
+## Reference
+
+- [xv6 book]
+- [xv6 source code]
+- [jyy slides](https://jyywiki.cn/OS/2022/slides/18.slides.html#/)
