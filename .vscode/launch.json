@@ -4,7 +4,7 @@
         {
             "name": "Debug xv6",
             "type": "cppdbg",
-            "preLaunchTask": "xv6-build-gdb",
+            // "preLaunchTask": "xv6-build-gdb",
             "request": "launch",
             "program": "${workspaceFolder}/kernel/kernel",
             "args": [],

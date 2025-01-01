@@ -12,17 +12,14 @@
 LEC 1 (rtm): Introduction and examples (handouts: xv6 book)
 
 > 简介和示例 (讲义: xv6 书籍)
-> 
 
 Preparation: Read chapter 1 (for your amusement: Unix)
 
-> 准备: 阅读第 1 章 (供您娱乐: Unix)
-> 
+> 准备: 阅读第 1 章
 
 Assignment: [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html)
 
-> 作业：实验室工具: Unix 工具
-> 
+> 作业：实验工具: Unix 工具
 
 ---
 
@@ -200,6 +197,24 @@ pass!
 
 ### `user/pingpong.c`
 
+在开始写代码之前, 我们来看一下 xv6 的 `pipe` 系统调用
+
+[struct pipe {](https://github.com/n-WN/xv6-labs-2024/blob/c58090661291b08d6c1ab45ca155595007a1829c/kernel/pipe.c#L13-L20)
+
+由 file descriptor (fd), size, data, spinlock 组成
+
+明白了实现, 那我们就可以在 gdb 时对 alloc, close, read, write 等操作下断点
+
+同时触发管道的读写操作, 以便观察
+
+> 其中 pipe 的 wake 机制是通过 `wakeup` 实现的, 也就是说, 当管道中有数据时, 会唤醒等待的进程
+>
+> 防止进程空转(阻塞)
+>
+> 解决方案是来读写不同的 channel
+
+最终本题实现如下
+
 ```c
 /*
  * Write a user-level program that uses xv6 system calls to ''ping-pong'' a byte
@@ -347,6 +362,85 @@ GDB 会查找当前目录下的 `.gdbinit` 文件, 如果有则自动加载, 而
 #### 效果图
 
 ![](file:///Users/lov3/Documents/Blog/Gridea/post-images/1735065113481.png)
+
+#### Profile
+
+> launch.json
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug xv6",
+            "type": "cppdbg",
+            "preLaunchTask": "xv6-build-gdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/kernel/kernel",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "miDebuggerServerAddress": "localhost:25501",
+            "miDebuggerPath": "/opt/homebrew/bin/riscv64-elf-gdb",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+
+            "setupCommands": [
+                // https://www.zixiangcode.top/article/how-to-debug-xv6-in-vscode
+                // 笔者不添加来自上面链接的配置, 也可以加载 Register Table, 遂注释掉
+                // {
+                //     "description": "Enable pretty-printing for gdb",
+                //     "text": "-enable-pretty-printing",
+                //     "ignoreFailures": true
+                // },
+                // 在这里加载了寄存器信息表 
+                // {
+                //     "text": "set tdesc filename Debug.xml",
+                // }
+            ]
+            // "logging": {
+            //     "trace": true,
+            //     "traceResponse": true,
+            //     "engineLogging": true
+            // }
+        }
+    ]
+}
+```
+
+> tasks.json
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "xv6-build-gdb",
+            "type": "shell",
+            "isBackground": true,
+            "command": "make qemu-gdb",
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "beginsPattern": ".*Now run 'gdb' in another window.",
+                        // 要对应编译成功后,一句echo的内容. 此处对应 Makefile Line:170
+                        "endsPattern": "."
+                    }
+                }
+            ]
+        }
+    ]
+}
+```
 
 ### CLion
 
@@ -554,3 +648,5 @@ macOS 下的 CLion 默认格式化整个文件的快捷键是 `Cmd + Option + L`
 [guidance](https://pdos.csail.mit.edu/6.1810/2024/labs/guidance.html)
 
 [VS Code - cpp launch-json-reference](https://code.visualstudio.com/docs/cpp/launch-json-reference)
+
+[55-管道介绍-xv6 pipe 实现分析](https://www.bilibili.com/video/BV1Lj411j7Fe/)
