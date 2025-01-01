@@ -373,7 +373,7 @@ int main() {
 
 ### find
 
-[find.c]()
+[find.c](https://github.com/n-WN/xv6-labs-2024/blob/feature/primes/user/find.c)
 
 git commit message 即为评测结果
 
