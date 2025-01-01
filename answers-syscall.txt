@@ -5,3 +5,5 @@
 4.1 B+>0x80001c6c <syscall+16> lw      a3,0(zero) # 0x0
 4.2 stval
 5.1 没找到
+6.1 name=initcode
+6.2 pid=1
