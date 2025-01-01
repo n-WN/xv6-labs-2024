@@ -727,3 +727,5 @@ macOS 下的 CLion 默认格式化整个文件的快捷键是 `Cmd + Option + L`
 [VS Code - cpp launch-json-reference](https://code.visualstudio.com/docs/cpp/launch-json-reference)
 
 [55-管道介绍-xv6 pipe 实现分析](https://www.bilibili.com/video/BV1Lj411j7Fe/)
+
+[gdb](https://www.cse.iitd.ernet.in/~sbansal/os/previous_years/2014/lec/l3-hw1.html)
