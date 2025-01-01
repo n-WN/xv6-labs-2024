@@ -2,9 +2,6 @@
 
 ## What's in this part? [???]
 
-<!-- - [ ] [Introduction and examples](https://pdos.csail.mit.edu/6.S081/2024/schedule.html)
-- [ ] [Lab util: Unix utilities](https://pdos.csail.mit.edu/6.S081/2024/labs/util.html) -->
-
 ---
 
 ## 本章会涉及到
