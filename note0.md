@@ -379,7 +379,7 @@ git commit message 即为评测结果
 
 ### xargs
 
-
+[xargs.c](https://github.com/n-WN/xv6-labs-2024/blob/feature/primes/user/xargs.c)
 
 ## 调试
 
